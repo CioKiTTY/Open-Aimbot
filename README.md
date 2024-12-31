@@ -2,33 +2,27 @@
     <h1>Open Aimbot</h1>
     <p>
         <!-- GitHub Releases -->
-        <a href="https://github.com/ttwizz/Open-Aimbot/releases">
+        <a href="https://github.com/CioKiTTY/Open-Aimbot/releases">
             <img src="icons/github-icon.svg" alt="GitHub Releases" />
-        </a>
-        <!-- Discord Server -->
-        <a href="https://twix.cyou/pix">
-            <img src="icons/discord-icon.svg" alt="Discord Server" />
         </a>
     </p>
     <!-- Project Information -->
     <!-- Repository Stars -->
-    <a href="https://github.com/ttwizz/Open-Aimbot/stargazers">
-        <img src="https://img.shields.io/github/stars/ttwizz/Open-Aimbot?label=Stars&logo=GitHub" alt="Repository Stars" />
+    <a href="https://github.com/CioKiTTY/Open-Aimbot/stargazers">
+        <img src="https://img.shields.io/github/stars/CioKiTTY/Open-Aimbot?label=Stars&logo=GitHub" alt="Repository Stars" />
     </a>
     <!-- Repository Forks -->
-    <a href="https://github.com/ttwizz/Open-Aimbot/fork">
-        <img src="https://img.shields.io/github/forks/ttwizz/Open-Aimbot?label=Forks&logo=GitHub" alt="Repository Forks" />
+    <a href="https://github.com/CioKiTTY/Open-Aimbot/fork">
+        <img src="https://img.shields.io/github/forks/CioKiTTY/Open-Aimbot?label=Forks&logo=GitHub" alt="Repository Forks" />
     </a>
     <!-- Latest Release -->
-    <a href="https://github.com/ttwizz/Open-Aimbot/releases/latest">
-        <img src="https://img.shields.io/github/v/release/ttwizz/Open-Aimbot?label=Latest%20Release" alt="Latest Release" />
+    <a href="https://github.com/CioKiTTY/Open-Aimbot/releases/latest">
+        <img src="https://img.shields.io/github/v/release/CioKiTTY/Open-Aimbot?label=Latest%20Release" alt="Latest Release" />
     </a>
     <!-- Last Modified -->
-    <a href="https://github.com/ttwizz/Open-Aimbot/commits">
-        <img src="https://img.shields.io/github/last-commit/ttwizz/Open-Aimbot?label=Last%20Modified" alt="Last Modified" />
+    <a href="https://github.com/CioKiTTY/Open-Aimbot/commits">
+        <img src="https://img.shields.io/github/last-commit/CioKiTTY/Open-Aimbot?label=Last%20Modified" alt="Last Modified" />
     </a>
-
-Welcome to the **pix**! We develop various utilities for Roblox, security systems, protection and scripts for specific games, general scenarios. You can find more of our projects on our [Discord Server](https://twix.cyou/pix).
 </div>
 
 ___
@@ -47,7 +41,7 @@ Open Aimbot is a **universal** open source framework. It offers a wide selection
 #### Made with love,
 
 ```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/ttwizz/Open-Aimbot/master/source.lua", true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/CioKiTTY/Open-Aimbot/master/source.lua", true))()
 ```
 
 <p align="center">
