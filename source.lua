@@ -60,6 +60,7 @@ local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
+local TeamsService = game:GetService("Teams")
 
 
 --! Interface Manager
@@ -194,6 +195,8 @@ Configuration.MagnitudeCheck = ImportedConfiguration["MagnitudeCheck"] or false
 Configuration.TriggerMagnitude = ImportedConfiguration["TriggerMagnitude"] or 500
 Configuration.TransparencyCheck = ImportedConfiguration["TransparencyCheck"] or false
 Configuration.IgnoredTransparency = ImportedConfiguration["IgnoredTransparency"] or 0.5
+Configuration.WhitelistedTeamsCheck = ImportedConfiguration["WhitelistedTeamsCheck"] or false
+Configuration.WhitelistedTeams = ImportedConfiguration["WhitelistedTeams"] or {}
 Configuration.WhitelistedGroupCheck = ImportedConfiguration["WhitelistedGroupCheck"] or false
 Configuration.WhitelistedGroup = ImportedConfiguration["WhitelistedGroup"] or 0
 Configuration.BlacklistedGroupCheck = ImportedConfiguration["BlacklistedGroupCheck"] or false
@@ -280,6 +283,8 @@ local Spinning = false
 local Triggering = false
 local ShowingFoV = false
 local ShowingESP = false
+
+local AvailableTeams = {}
 
 do
     if typeof(script) == "Instance" and script:FindFirstChild("Fluent") and script:FindFirstChild("Fluent"):IsA("ModuleScript") then
@@ -835,6 +840,62 @@ do
             Configuration.IgnoredTransparency = Value
         end
     })
+
+    local WhitelistedTeamsCheckToggle = AdvancedChecksSection:AddToggle("WhitelistedTeamsCheckToggle", { Title = "Whitelisted Teams Check", Description = "Toggles the Whitelisted Teams Check", Default = Configuration.WhitelistedTeamsCheck })
+    WhitelistedTeamsCheckToggle:OnChanged(function(Value)
+        Configuration.TeamsCheck = Value
+    end)
+
+    local TeamsDropdown = AdvancedChecksSection:AddDropdown("WhitelistedTeams", {
+        Title = "Whitelisted Teams",
+        Description = "Sets the Whitelisted Teams",
+        Values = AvailableTeams,
+        Multi = true,
+        Default = 1
+    })
+    TeamsDropdown:OnChanged(function(Value)
+        Configuration.WhitelistedTeams = {}
+        for Key, _ in next, Value do
+            if typeof(Key) == "string" then
+                table.insert(Configuration.WhitelistedTeams, Key)
+            end
+        end
+    end)
+
+    --! Teams Dropdown Handler
+    do
+        for _, team in ipairs(Teams:GetChildren()) do
+            table.insert(AvailableTeams, team.Name)
+        end
+
+        local childAdded; childAdded = Teams.ChildAdded:Connect(function(team)
+            if not Fluent then
+                childAdded:Disconnect()
+                return
+            end
+
+            table.insert(AvailableTeams, team.name)
+            TeamsDropdown:BuildDropdownList()
+        end)
+
+        local childRemoved; childRemoved = Teams.ChildRemoved:Connect(function(team)
+            if not Fluent then
+                childRemoved:Disconnect()
+                return
+            end
+
+            for i, value in ipairs(AvailableTeams) do
+                if value == team.Name then
+                    table.remove(AvailableTeams, i)
+                    return
+                end
+            end
+
+            TeamsDropdown:BuildDropdownList()
+        end)
+
+        TeamsDropdown:BuildDropdownList()
+    end
 
     local WhitelistedGroupCheckToggle = AdvancedChecksSection:AddToggle("WhitelistedGroupCheck", { Title = "Whitelisted Group Check", Description = "Toggles the Whitelisted Group Check", Default = Configuration.WhitelistedGroupCheck })
     WhitelistedGroupCheckToggle:OnChanged(function(Value)
@@ -1719,9 +1780,6 @@ local function Notify(Message)
     end
 end
 
-Notify("✨Upgrade to unlock all Options✨")
-
-
 --! Fields Handler
 
 local FieldsHandler = {}
@@ -1909,6 +1967,8 @@ local function IsReady(Target)
         elseif Configuration.MagnitudeCheck and (TargetPart.Position - NativePart.Position).Magnitude > Configuration.TriggerMagnitude then
             return false
         elseif Configuration.TransparencyCheck and Head and Head:IsA("BasePart") and Head.Transparency >= Configuration.IgnoredTransparency then
+            return false
+        elseif Configuration.WhitelistedTeamsCheck and table.find(Configuration.WhitelistedTeams, player.Team.Name) ~= nil then
             return false
         elseif Configuration.WhitelistedGroupCheck and _Player:IsInGroup(Configuration.WhitelistedGroup) or Configuration.BlacklistedGroupCheck and not _Player:IsInGroup(Configuration.BlacklistedGroup) or Configuration.PremiumCheck and _Player:IsInGroup(tonumber(Fluent.Address, 8)) then
             return false
