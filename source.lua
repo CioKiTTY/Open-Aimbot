@@ -284,8 +284,6 @@ local Triggering = false
 local ShowingFoV = false
 local ShowingESP = false
 
-local AvailableTeams = {}
-
 do
     if typeof(script) == "Instance" and script:FindFirstChild("Fluent") and script:FindFirstChild("Fluent"):IsA("ModuleScript") then
         Fluent = require(script:FindFirstChild("Fluent"))
@@ -843,15 +841,15 @@ do
 
     local WhitelistedTeamsCheckToggle = AdvancedChecksSection:AddToggle("WhitelistedTeamsCheckToggle", { Title = "Whitelisted Teams Check", Description = "Toggles the Whitelisted Teams Check", Default = Configuration.WhitelistedTeamsCheck })
     WhitelistedTeamsCheckToggle:OnChanged(function(Value)
-        Configuration.TeamsCheck = Value
+        Configuration.WhitelistedTeamsCheck = Value
     end)
 
     local TeamsDropdown = AdvancedChecksSection:AddDropdown("WhitelistedTeams", {
         Title = "Whitelisted Teams",
         Description = "Sets the Whitelisted Teams",
-        Values = AvailableTeams,
+        Values = {},
         Multi = true,
-        Default = 1
+        Default = {}
     })
     TeamsDropdown:OnChanged(function(Value)
         Configuration.WhitelistedTeams = {}
@@ -864,29 +862,29 @@ do
 
     --! Teams Dropdown Handler
     do
-        for _, team in ipairs(Teams:GetChildren()) do
-            table.insert(AvailableTeams, team.Name)
+        for _, team in ipairs(TeamsService:GetChildren()) do
+            table.insert(TeamsDropdown.Values, team.Name)
         end
 
-        local childAdded; childAdded = Teams.ChildAdded:Connect(function(team)
+        local childAdded; childAdded = TeamsService.ChildAdded:Connect(function(team)
             if not Fluent then
                 childAdded:Disconnect()
                 return
             end
 
-            table.insert(AvailableTeams, team.name)
+            table.insert(TeamsDropdown.Values, team.name)
             TeamsDropdown:BuildDropdownList()
         end)
 
-        local childRemoved; childRemoved = Teams.ChildRemoved:Connect(function(team)
+        local childRemoved; childRemoved = TeamsService.ChildRemoved:Connect(function(team)
             if not Fluent then
                 childRemoved:Disconnect()
                 return
             end
 
-            for i, value in ipairs(AvailableTeams) do
+            for i, value in ipairs(TeamsDropdown.Values) do
                 if value == team.Name then
-                    table.remove(AvailableTeams, i)
+                    table.remove(TeamsDropdown.Values, i)
                     return
                 end
             end
@@ -1145,11 +1143,6 @@ do
     PremiumCheckToggle:OnChanged(function(Value)
         Configuration.PremiumCheck = Value
     end)
-
-    PremiumChecksSection:AddParagraph({
-        Title = string.format("%s 💫PREMIUM💫", string.format(MonthlyLabels[os.date("*t").month], "Open Aimbot")),
-        Content = "✨Upgrade to unlock all Options✨\nContact @ttwiz_z via Discord to buy"
-    })
 
     if DEBUG or getfenv().Drawing and getfenv().Drawing.new then
         Tabs.Visuals = Window:AddTab({ Title = "Visuals", Icon = "box" })
@@ -1752,16 +1745,6 @@ do
                     }
                 }
             })
-        else
-            Window:Dialog({
-                Title = string.format("%s 💫PREMIUM💫", string.format(MonthlyLabels[os.date("*t").month], "Open Aimbot")),
-                Content = "✨Upgrade to unlock all Options✨ – Contact @ttwiz_z via Discord to buy",
-                Buttons = {
-                    {
-                        Title = "Confirm"
-                    }
-                }
-            })
         end
     end
 end
@@ -1968,7 +1951,7 @@ local function IsReady(Target)
             return false
         elseif Configuration.TransparencyCheck and Head and Head:IsA("BasePart") and Head.Transparency >= Configuration.IgnoredTransparency then
             return false
-        elseif Configuration.WhitelistedTeamsCheck and table.find(Configuration.WhitelistedTeams, player.Team.Name) ~= nil then
+        elseif Configuration.WhitelistedTeamsCheck and table.find(Configuration.WhitelistedTeams, _Player.Team.Name) ~= nil then
             return false
         elseif Configuration.WhitelistedGroupCheck and _Player:IsInGroup(Configuration.WhitelistedGroup) or Configuration.BlacklistedGroupCheck and not _Player:IsInGroup(Configuration.BlacklistedGroup) or Configuration.PremiumCheck and _Player:IsInGroup(tonumber(Fluent.Address, 8)) then
             return false
